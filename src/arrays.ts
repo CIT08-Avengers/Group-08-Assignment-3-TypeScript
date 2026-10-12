@@ -24,7 +24,11 @@ import { Student, Enrolment, students, courses, enrolments } from './data.js';
  */
 export function gradeReport(studentId: string): string {
   // TODO
-  throw new Error('not implemented');
+  return enrolments.filter(e => e.studentId === studentId).map(e => {
+    const course = courses.find(c => c.courseId === e.courseId);
+    const grade = e.grade === null ? 'not awarded' : e.grade;
+    return `${course?.courseId} ${course?.title}: ${grade}`;
+  }).join('\n');
 }
 
 // --- A2. Averaging --------------------------------------------------------
@@ -41,7 +45,7 @@ export function gradeReport(studentId: string): string {
  */
 export function averageGrade(studentId: string): number {
   // TODO
-  throw new Error('not implemented');
+  return enrolments.filter(e => e.studentId === studentId && e.grade != null).reduce((sum, enrolment, _index, array) => sum + Number(enrolment.grade) / array.length, 0);
 }
 
 // --- A3. Who is missing a grade ------------------------------------------
@@ -52,7 +56,9 @@ export function averageGrade(studentId: string): number {
  */
 export function awaitingGrades(): string[] {
   // TODO
-  throw new Error('not implemented');
+  const studentsWithMissingGrades = enrolments.filter(e => e.grade === null).map(e => e.studentId);
+
+  return students.filter(s => studentsWithMissingGrades.includes(s.id)).map(s => s.name).sort();
 }
 
 // --- A4. A family of formatters ------------------------------------------
@@ -68,7 +74,7 @@ export function awaitingGrades(): string[] {
  */
 export function formatterFor(style: 'short' | 'long'): (student: Student) => string {
   // TODO
-  throw new Error('not implemented');
+  return style === 'short' ? (student: Student) => student.name : (student: Student) => `${student.name} (${student.deptName}), ${student.totCred} credits`;
 }
 
 // --- A5. Changing nothing -------------------------------------------------
@@ -80,5 +86,5 @@ export function formatterFor(style: 'short' | 'long'): (student: Student) => str
  */
 export function raiseCredits(list: Student[], deptName: string, extra: number): Student[] {
   // TODO
-  throw new Error('not implemented');
+  return list.map(student => student.deptName === deptName ? { ...student, totCred: student.totCred + extra } : student);
 }
