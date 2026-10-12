@@ -2,7 +2,7 @@
 //
 // Each of these either takes a function, returns one, or both.
 
-import { Student } from './data.js';
+import { Student, students } from './data.js';
 
 /** A test on a student. Used by everything below. */
 export type Test = (student: Student) => boolean;
@@ -18,8 +18,7 @@ export type Test = (student: Student) => boolean;
  * One line is enough, once you see what has to be returned.
  */
 export function not(test: Test): Test {
-  // TODO
-  throw new Error('not implemented');
+  return (student) => !test(student)
 }
 
 // --- B2. One pass, two answers -------------------------------------------
@@ -33,9 +32,36 @@ export function not(test: Test): Test {
  * The return type is a tuple, so the two arrays cannot be mixed up, and the
  * caller can take them apart by position.
  */
+
+// Without reduce
+// export function partition(list: Student[], test: Test): [Student[], Student[]] {
+//   const passed = []
+//   const failed = []
+
+//   for (const s of list) {
+//     if (test(s)) {
+//       passed.push(s)
+//     } else {
+//       failed.push(s)
+//     }
+//   }
+//   return [passed, failed]
+// }
+
 export function partition(list: Student[], test: Test): [Student[], Student[]] {
-  // TODO
-  throw new Error('not implemented');
+  const result: [Student[], Student[]] = list.reduce((a, c) => {
+    const passed = a[0]
+    const failed = a[1]
+    
+    if (test(c)) {
+      passed.push(c)
+    } else {
+      failed.push(c)
+    }
+
+    return [passed, failed]
+  },[[] as Student[], [] as Student[]])
+  return result
 }
 
 // --- B3. Do it once -------------------------------------------------------
@@ -54,8 +80,14 @@ export function partition(list: Student[], test: Test): [Student[], Student[]] {
  * Be ready to say where the saved number lives after once has returned.
  */
 export function once(calculation: () => number): () => number {
-  // TODO
-  throw new Error('not implemented');
+  let result: null | number = null
+
+  return () => {
+    if (!result) {
+      result = calculation()
+    }
+    return result
+  }
 }
 
 // --- B4. All of them ------------------------------------------------------
@@ -69,9 +101,13 @@ export function once(calculation: () => number): () => number {
  * The three dots in a parameter list gather the arguments into an array.
  * With no tests at all, everything passes: there is nothing to fail.
  */
-export function allOf(...tests: Test[]): Test {
-  // TODO
-  throw new Error('not implemented');
+export function allOf(...tests: Test[]): Test {  
+  return (student) => {
+    for (const t of tests) {
+      if (!t(student)) return false
+    }
+    return true
+  }
 }
 
 // Two small helpers to build tests with, given to you.
