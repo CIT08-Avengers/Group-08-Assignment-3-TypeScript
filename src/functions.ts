@@ -19,7 +19,7 @@ export type Test = (student: Student) => boolean;
  */
 export function not(test: Test): Test {
   // TODO
-  throw new Error('not implemented');
+  return (student: Student) => (!test(student));
 }
 
 // --- B2. One pass, two answers -------------------------------------------
@@ -35,7 +35,7 @@ export function not(test: Test): Test {
  */
 export function partition(list: Student[], test: Test): [Student[], Student[]] {
   // TODO
-  throw new Error('not implemented');
+  return [list.filter(test), list.filter(not(test))];
 }
 
 // --- B3. Do it once -------------------------------------------------------
@@ -55,7 +55,15 @@ export function partition(list: Student[], test: Test): [Student[], Student[]] {
  */
 export function once(calculation: () => number): () => number {
   // TODO
-  throw new Error('not implemented');
+  let count = 0;
+
+  if (count === 0) {
+    count++;
+    count = calculation();
+    return () => count;
+  } else {
+    return () => count;
+  }
 }
 
 // --- B4. All of them ------------------------------------------------------
@@ -71,7 +79,7 @@ export function once(calculation: () => number): () => number {
  */
 export function allOf(...tests: Test[]): Test {
   // TODO
-  throw new Error('not implemented');
+  return (student: Student) => tests.every(test =>  test(student));
 }
 
 // Two small helpers to build tests with, given to you.

@@ -5,7 +5,7 @@
 
 import { students } from './data.js';
 import { gradeReport, averageGrade, awaitingGrades, formatterFor, raiseCredits } from './arrays.js';
-// import { not, partition, once, allOf, inDepartment, atLeast } from './functions.js';
+import { not, partition, once, allOf, inDepartment, atLeast } from './functions.js';
 
 console.log(students.length + ' students');
 
@@ -30,16 +30,16 @@ console.log(students[4].totCred);               // 56  (unchanged)
 console.log(raised[0].totCred);                 // 102 (Zhang, not Physics)
 
 // --- Part B ---
-// const inCs = inDepartment('Comp. Sci.');
-// console.log(students.filter(inCs).length);       // 4
-// console.log(students.filter(not(inCs)).length);  // 9
-// const [upper, lower] = partition(students, atLeast(60));
-// console.log(upper.length, lower.length);         // 6 7
+const inCs = inDepartment('Comp. Sci.');
+console.log(students.filter(inCs).length);       // 4
+console.log(students.filter(not(inCs)).length);  // 9
+const [upper, lower] = partition(students, atLeast(60));
+console.log(upper.length, lower.length);         // 6 7
 // calls is not part of the task: it only proves the calculation ran once.
 // The first two numbers are the answer handed back twice, the last is how
 // many times the calculation actually ran.
-// let calls = 0;
-// const count = once(() => { calls++; return students.length; });
-// console.log(count(), count(), calls);            // 13 13 1
-// console.log(students.filter(allOf(inCs, atLeast(60))).length);   // 1
-// console.log(students.filter(allOf()).length);    // 13
+let calls = 0;
+const count = once(() => { calls++; return students.length; });
+console.log(count(), count(), calls);            // 13 13 1
+console.log(students.filter(allOf(inCs, atLeast(60))).length);   // 1
+console.log(students.filter(allOf()).length);    // 13
