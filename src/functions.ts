@@ -18,6 +18,8 @@ export type Test = (student: Student) => boolean;
  * One line is enough, once you see what has to be returned.
  */
 export function not(test: Test): Test {
+  const oppositeTest: Test = (student: Student) => !test(student);
+  return oppositeTest;
   // TODO
   throw new Error('not implemented');
 }
@@ -34,6 +36,18 @@ export function not(test: Test): Test {
  * caller can take them apart by position.
  */
 export function partition(list: Student[], test: Test): [Student[], Student[]] {
+  const passing: Student[] = [];
+  const failing: Student[] = [];
+  
+  for (const student of list) {
+    if (test(student)) {
+      passing.push(student);
+    } else {
+      failing.push(student);
+    }
+  }
+  
+  return [passing, failing];
   // TODO
   throw new Error('not implemented');
 }
@@ -54,6 +68,22 @@ export function partition(list: Student[], test: Test): [Student[], Student[]] {
  * Be ready to say where the saved number lives after once has returned.
  */
 export function once(calculation: () => number): () => number {
+  let result: number | undefined;
+  let hasRun = false;
+
+  if (!hasRun) {
+    result = calculation();
+    hasRun = true;
+  }
+  
+  return () => {
+    if (result !== undefined) {
+      return result;
+    } else {
+      result = calculation();
+      return result;
+    }
+  };
   // TODO
   throw new Error('not implemented');
 }
@@ -70,6 +100,15 @@ export function once(calculation: () => number): () => number {
  * With no tests at all, everything passes: there is nothing to fail.
  */
 export function allOf(...tests: Test[]): Test {
+  return (student: Student) => {
+    for (const test of tests) {
+      if (!test(student)) {
+        return false;
+      }
+    }
+    return true;
+  };
+  
   // TODO
   throw new Error('not implemented');
 }

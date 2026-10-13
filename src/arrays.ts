@@ -23,6 +23,11 @@ import { Student, Enrolment, students, courses, enrolments } from './data.js';
  * join. No for loops in this file.
  */
 export function gradeReport(studentId: string): string {
+ let studentEnrolments = enrolments.filter(enrolment => enrolment.studentId === studentId);
+ return studentEnrolments.map(enrolment => {
+  const course = courses.find(course => course.courseId === enrolment.courseId);
+  return `${course?.courseId} ${course?.title}: ${enrolment.grade ?? 'not awarded'}`;
+ }).join('\n');
   // TODO
   throw new Error('not implemented');
 }
@@ -40,6 +45,12 @@ export function gradeReport(studentId: string): string {
  *     averageGrade('00128')   // 11  (12 and 10)
  */
 export function averageGrade(studentId: string): number {
+  const studentEnrolments = enrolments.filter(enrolment => enrolment.studentId === studentId && enrolment.grade !== null);
+  if (studentEnrolments.length === 0) {
+    return 0;
+  }
+  const total = studentEnrolments.reduce((sum, enrolment) => sum + parseInt(enrolment.grade!), 0);
+  return parseFloat((total / studentEnrolments.length).toFixed(1));
   // TODO
   throw new Error('not implemented');
 }
@@ -51,6 +62,13 @@ export function averageGrade(studentId: string): number {
  * sorted alphabetically and without repeats.
  */
 export function awaitingGrades(): string[] {
+  const studentsWithMissingGrades = enrolments
+    .filter(enrolment => enrolment.grade === null)
+    .map(enrolment => {
+      const student = students.find(s => s.id === enrolment.studentId);
+      return student ? student.name : '';
+    });
+  return Array.from(new Set(studentsWithMissingGrades));
   // TODO
   throw new Error('not implemented');
 }
@@ -67,6 +85,11 @@ export function awaitingGrades(): string[] {
  * the error the compiler gives you.
  */
 export function formatterFor(style: 'short' | 'long'): (student: Student) => string {
+  if (style === 'short') {
+    return (student: Student) => student.name;
+  } else if (style === 'long') {
+    return (student: Student) => `${student.name} (${student.deptName}), ${student.totCred} credits`;
+  }
   // TODO
   throw new Error('not implemented');
 }
@@ -79,6 +102,13 @@ export function formatterFor(style: 'short' | 'long'): (student: Student) => str
  * at all: build new objects with the three dots.
  */
 export function raiseCredits(list: Student[], deptName: string, extra: number): Student[] {
+  return list.map(student => {
+    if (student.deptName === deptName) {
+      return { ...student, totCred: student.totCred + extra };
+    } else {
+      return student;
+    }
+  });
   // TODO
   throw new Error('not implemented');
 }
